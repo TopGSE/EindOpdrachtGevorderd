@@ -1,0 +1,29 @@
+﻿<Window x:Class="_1.Route_Netwerk_WPF.FacilityNetwork"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_1.Route_Netwerk_WPF"
+        mc:Ignorable="d"
+        Title="PlanningWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox SelectionMode="Extended" Grid.Row="0" Grid.Column="0" Name="ListBoxAlleFaciliteiten" Margin="5"/>
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="5">
+            <Button Content="  >  " Margin="5" Click="VoegFaciliteitToe_Click"/>
+            <Button Content="&lt;" Margin="5" Click="VerwijderFaciliteit_Click"/>
+            <Button Content="  >>  " Margin="5" Click="VoegAlleFaciliteitenToe_Click"/>
+            <Button Content=" &lt;&lt; " Margin="5" Click="VerwijderAlleFaciliteiten_Click"/>
+        </StackPanel>
+        <ListBox SelectionMode="Extended" Grid.Row="0" Grid.Column="2" Name="ListBoxGeselecteerdeFaciliteiten" Margin="5"/>
+        <Button Grid.Row="1" Grid.Column="0" Margin="5" Content="Toevoegen" Grid.ColumnSpan="3" Click="VoegFaciliteitenToe_Click"/>
+    </Grid>
+</Window>

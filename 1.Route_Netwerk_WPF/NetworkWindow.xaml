@@ -1,0 +1,27 @@
+﻿<Window x:Class="_1.Route_Netwerk_WPF.NetworkWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_1.Route_Netwerk_WPF"
+        mc:Ignorable="d"
+        Title="NetworkWindow" Height="270" Width="400">
+    <Grid Margin="10">
+        <TextBlock Text="Point ID:" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <TextBox Name="PointIdTextBox" VerticalAlignment="Top" Margin="100,10,10,0" IsReadOnly="True"/>
+
+        <TextBlock Text="X Coordinate:" VerticalAlignment="Top" Margin="10,50,0,0"/>
+        <TextBox Name="XTextBox" VerticalAlignment="Top" Margin="100,50,10,0"/>
+
+        <TextBlock Text="Y Coordinate:" VerticalAlignment="Top" Margin="10,90,0,0"/>
+        <TextBox Name="YTextBox" VerticalAlignment="Top" Margin="100,90,10,0"/>
+
+        <TextBlock Text="Facilities:" VerticalAlignment="Top" Margin="10,130,0,0"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="100,130,10,0">
+            <ComboBox Name="FacilitiesComboBox" Width="150" HorizontalAlignment="Left" Margin="0,0,10,0" SelectedIndex="0"/>
+            <Button Content="Edit" Width="60" Height="25" VerticalAlignment="Center" Click="EditFacility_Click"/>
+        </StackPanel>
+
+        <Button Content="Save" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Height="30" Margin="0,0,10,10" Click="Save_Click"/>
+    </Grid>
+</Window>

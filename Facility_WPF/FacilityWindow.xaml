@@ -1,0 +1,33 @@
+﻿<Window x:Class="Facility_WPF.FacilityWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Facility_WPF"
+        mc:Ignorable="d"
+        Title="FacilityWindow - " Height="200" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <!-- Voor de knop -->
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Id:" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Name="IdTextBox" Margin="5" IsReadOnly="True"/>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Naam:" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="NameTextBox" Margin="5"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Verbonden punten:" VerticalAlignment="Center" Margin="5"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" Name="PointsComboBox" Margin="5" DisplayMemberPath="Naam"/>
+
+        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="Opslaan" Name="SaveButton" Margin="5" Click="SaveButton_Click"/>
+    </Grid>
+</Window>

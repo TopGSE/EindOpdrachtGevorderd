@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netwerk_WPF", "1.Route_Netwerk_WPF\Netwerk_WPF.csproj", "{3D09C4F5-FB47-45E0-AC6C-08A845EE8599}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route_Netwerk_BL", "2.Route_Netwerk_BL\Route_Netwerk_BL.csproj", "{4DEE3510-1C29-44B0-96A4-F50BED4D3289}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route_Netwerk_DL", "3.Route_Netwerk_DL\Route_Netwerk_DL.csproj", "{A3266E31-9805-4882-B5BA-4956B9833BC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route_Netwerk_Testing", "4.Route_Netwerk_Testing\Route_Netwerk_Testing.csproj", "{FF904099-774B-46F5-9F5D-C8E51A2928E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facility_WPF", "Facility_WPF\Facility_WPF.csproj", "{C761A7DF-9E58-4D41-9DDF-DE66EF283BDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaveApp", "FileSaveApp\FileSaveApp.csproj", "{6417D183-F52E-4B13-AF27-791163AA78CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RouteWPF", "RouteWPF\RouteWPF.csproj", "{F7211522-A368-4D3F-B7CD-F901D3EF2AFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D09C4F5-FB47-45E0-AC6C-08A845EE8599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D09C4F5-FB47-45E0-AC6C-08A845EE8599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D09C4F5-FB47-45E0-AC6C-08A845EE8599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D09C4F5-FB47-45E0-AC6C-08A845EE8599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEE3510-1C29-44B0-96A4-F50BED4D3289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEE3510-1C29-44B0-96A4-F50BED4D3289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEE3510-1C29-44B0-96A4-F50BED4D3289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEE3510-1C29-44B0-96A4-F50BED4D3289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3266E31-9805-4882-B5BA-4956B9833BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3266E31-9805-4882-B5BA-4956B9833BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3266E31-9805-4882-B5BA-4956B9833BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3266E31-9805-4882-B5BA-4956B9833BC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF904099-774B-46F5-9F5D-C8E51A2928E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF904099-774B-46F5-9F5D-C8E51A2928E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF904099-774B-46F5-9F5D-C8E51A2928E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF904099-774B-46F5-9F5D-C8E51A2928E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C761A7DF-9E58-4D41-9DDF-DE66EF283BDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C761A7DF-9E58-4D41-9DDF-DE66EF283BDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C761A7DF-9E58-4D41-9DDF-DE66EF283BDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C761A7DF-9E58-4D41-9DDF-DE66EF283BDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6417D183-F52E-4B13-AF27-791163AA78CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6417D183-F52E-4B13-AF27-791163AA78CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6417D183-F52E-4B13-AF27-791163AA78CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6417D183-F52E-4B13-AF27-791163AA78CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7211522-A368-4D3F-B7CD-F901D3EF2AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7211522-A368-4D3F-B7CD-F901D3EF2AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7211522-A368-4D3F-B7CD-F901D3EF2AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7211522-A368-4D3F-B7CD-F901D3EF2AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4951BBD-1B1F-441C-A0EE-2360F38E3E20}
+	EndGlobalSection
+EndGlobal

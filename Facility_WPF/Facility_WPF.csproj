@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\1.Route_Netwerk_WPF\Netwerk_WPF.csproj" />
+    <ProjectReference Include="..\2.Route_Netwerk_BL\Route_Netwerk_BL.csproj" />
+    <ProjectReference Include="..\3.Route_Netwerk_DL\Route_Netwerk_DL.csproj" />
+  </ItemGroup>
+
+</Project>

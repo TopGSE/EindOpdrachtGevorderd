@@ -1,0 +1,26 @@
+﻿<Window x:Class="_1.Route_Netwerk_WPF.MainWindow"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+       Title="Netwerk_WPF" Height="800" Width="760"
+       Loaded="Window_Loaded"
+       >
+   <Window.Resources>
+       <ContextMenu x:Key="PointContextMenu">
+           <MenuItem Header="Bewerk punt" Click="BewerkPunt_Click"/>
+            <MenuItem Header="Verwijder punt" Click="VerwijderPunt_Click"/>
+            <MenuItem Header="Voeg verbinding toe" Click="VoegVerbindingToe_Click"/>
+            <MenuItem Header="Verwijder verbinding" Click="VerwijderVerbinding_Click"/>
+        </ContextMenu>
+   </Window.Resources>
+    <Grid  Margin="10,50,10,10">
+        <Canvas x:Name="NetworkCanvas" Background="Transparent" MouseLeftButtonDown="NetworkCanvas_MouseLeftButtonDown">
+            <Canvas.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Voeg punt toe" Click="VoegPuntToe_Click"/>
+                    <MenuItem Header="Maak een route" Click="MaakRoute_Click"/>
+                </ContextMenu>
+            </Canvas.ContextMenu>
+        </Canvas>
+    </Grid>
+</Window>
