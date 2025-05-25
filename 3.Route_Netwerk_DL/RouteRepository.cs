@@ -45,10 +45,13 @@ namespace _3.Route_Netwerk_DL
 
             return routes;
         }
-
         public List<NetworkPoint> HaalPuntenOp(int id)
         {
-            string query = @"SELECT np.Id, np.X, np.Y, rp.IsStopPlaats FROM RoutePoints rp JOIN NetworkPoints rp.NetworkPointId = np.IdWHERE rp.RouteId = @RouteId";
+            string query = @"SELECT np.Id, np.X, np.Y, rp.IsStopPlaats 
+                 FROM RoutePoints rp 
+                 JOIN NetworkPoints np ON rp.NetworkPointId = np.Id 
+                 WHERE rp.RouteId = @RouteId";
+
 
             List<NetworkPoint> punten = new();
 
@@ -73,9 +76,10 @@ namespace _3.Route_Netwerk_DL
             }
             return punten;
         }
-
         public void VoegRouteToe(string naam, List<NetworkPoint> punten)
         {
+            
+            string checkQuery = "SELECT COUNT(*) FROM Routes WHERE LOWER(Naam) = LOWER(@Naam)";
             string insertRouteQuery = "INSERT INTO Routes (Naam) OUTPUT INSERTED.Id VALUES (@Naam)";
             string insertPointQuery = "INSERT INTO RoutePoints (RouteId, NetworkPointId, IsStopPlaats) VALUES (@RouteId, @PointId, @IsStop)";
             string insertSegmentQuery = "INSERT INTO RouteSegments (RouteId, SegmentId, Volgorde) VALUES (@RouteId, @SegmentId, @Volgorde)";
@@ -83,6 +87,17 @@ namespace _3.Route_Netwerk_DL
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
+
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@Naam", naam);
+                    int count = (int)checkCmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        throw new InvalidOperationException("Er bestaat al een route met deze naam.");
+                    }
+                }
+
                 SqlTransaction tx = conn.BeginTransaction();
 
                 try
@@ -130,7 +145,6 @@ namespace _3.Route_Netwerk_DL
                 }
             }
         }
-
         public int HaalSegmentIdOp(int vanId, int naarId, SqlConnection conn, SqlTransaction tx)
         {
             string query = @"SELECT Id FROM Segments WHERE (StartPointId = @From AND EndPointId = @To) OR (StartPointId = @To AND EndPointId = @From)";
@@ -147,7 +161,6 @@ namespace _3.Route_Netwerk_DL
                 return (int)result;
             }
         }
-
         public Route GetRouteById(int id)
         {
             string routeQuery = "SELECT Naam FROM Routes WHERE Id = @Id";
@@ -196,9 +209,9 @@ namespace _3.Route_Netwerk_DL
                 return route;
             }
         }
-
         public void UpdateRoute(Route loadedRoute)
         {
+            string checkQuery = "SELECT COUNT(*) FROM Routes WHERE LOWER(Naam) = LOWER(@Naam) AND Id <> @Id";
             string updateRouteQuery = "UPDATE Routes SET Naam = @Naam WHERE Id = @Id";
             string deletePointsQuery = "DELETE FROM RoutePoints WHERE RouteId = @Id";
             string deleteSegmentsQuery = "DELETE FROM RouteSegments WHERE RouteId = @Id";
@@ -208,6 +221,18 @@ namespace _3.Route_Netwerk_DL
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
+
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@Naam", loadedRoute.Naam);
+                    checkCmd.Parameters.AddWithValue("@Id", loadedRoute.Id);
+                    int count = (int)checkCmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        throw new InvalidOperationException("Er bestaat al een route met deze naam.");
+                    }
+                }
+
                 SqlTransaction tx = conn.BeginTransaction();
 
                 try
@@ -266,7 +291,6 @@ namespace _3.Route_Netwerk_DL
                 }
             }
         }
-
         public void DeleteRoute(int id)
         {
             string deletePointsQuery = "DELETE FROM RoutePoints WHERE RouteId = @Id";

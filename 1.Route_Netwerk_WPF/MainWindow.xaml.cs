@@ -3,7 +3,6 @@ using _1.Route_Netwerk_WPF.Models;
 using _2.Route_Netwerk_BL.Managers;
 using _2.Route_Netwerk_BL.Models;
 using _3.Route_Netwerk_DL;
-using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,6 +23,8 @@ namespace _1.Route_Netwerk_WPF
         private ObservableCollection<Ellipse> selectedEllipses = new();
         private ObservableCollection<SegmentUI> segmentData = new();
         private ObservableCollection<NetworkPointUI> points = new();
+        private List<Ellipse> routeEllipses = new();
+        private bool isRouteShown = false;
         private List<Line> segmentLines = new();
         private int? actiefPuntId = null;
         private bool isAddPointMode = false;
@@ -38,6 +39,7 @@ namespace _1.Route_Netwerk_WPF
         {
             LoadNetwork();
         }
+
         private void LoadNetwork()
         {
             try
@@ -90,7 +92,7 @@ namespace _1.Route_Netwerk_WPF
             {
                 Width = 5,
                 Height = 5,
-                Stroke= Brushes.Black,
+                Stroke = Brushes.Black,
                 Fill = Brushes.Red,
                 Tag = point.Id,
                 ContextMenu = (ContextMenu)this.Resources["PointContextMenu"]
@@ -183,9 +185,16 @@ namespace _1.Route_Netwerk_WPF
 
                     if (result == true)
                     {
-                        netwerkBeheerder.UpdateNetworkPoint(NetworkPointMapper.MapToDomain(selectedPoint));
+                        try
+                        {
+                            netwerkBeheerder.UpdateNetworkPoint(NetworkPointMapper.MapToDomain(selectedPoint));
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
 
-                        if(pointEllipses.TryGetValue(selectedPoint.Id, out var ellipse))
+                        if (pointEllipses.TryGetValue(selectedPoint.Id, out var ellipse))
                         {
                             double scaledX = (selectedPoint.X - minX) * scale;
                             double scaledY = (selectedPoint.Y - minY) * scale;
@@ -194,6 +203,9 @@ namespace _1.Route_Netwerk_WPF
                         }
                         UpdateConnectedSegments(selectedPoint.Id);
                         LoadNetwork();
+                        //TODO: voeg punt in de lijst terug 
+                        //referentie probleem
+                        
                     }
                 }
             }
@@ -206,53 +218,29 @@ namespace _1.Route_Netwerk_WPF
                 return;
             }
 
-            // Haal de IDs op van de geselecteerde punten
             int startId = (int)selectedEllipses[0].Tag;
             int endId = (int)selectedEllipses[1].Tag;
 
-            if (startId == endId)
+            try
             {
-                MessageBox.Show("Je kunt geen verbinding maken met hetzelfde punt.");
-                return;
+                netwerkBeheerder.AddSegment(startId, endId);
+
+                var nieuwSegment = new SegmentUI { StartPointId = startId, EndPointId = endId };
+                segmentData.Add(nieuwSegment);
+                DrawSegment(nieuwSegment, points);
+
+                foreach (var ellipse in selectedEllipses)
+                {
+                    ellipse.Fill = Brushes.Red;
+                    ellipse.Width = 5;
+                    ellipse.Height = 5;
+                }
+                selectedEllipses.Clear();
             }
-
-            // Check of de verbinding al bestaat
-            bool bestaatAl = segmentData.Any(s =>
-                (s.StartPointId == startId && s.EndPointId == endId) ||
-                (s.StartPointId == endId && s.EndPointId == startId));
-
-            if (bestaatAl)
+            catch (Exception ex)
             {
-                MessageBox.Show("Er bestaat al een verbinding tussen deze twee punten.");
-                return;
+                MessageBox.Show(ex.Message);
             }
-
-            // Maak nieuw SegmentUI object
-            var nieuwSegment = new SegmentUI
-            {
-                StartPointId = startId,
-                EndPointId = endId
-            };
-
-            // Sla op in database via manager
-            netwerkBeheerder.SaveSegment(new Segment
-            {
-                StartPointId = startId,
-                EndPointId = endId
-            });
-
-            // Voeg toe aan segmentData en teken de lijn
-            segmentData.Add(nieuwSegment);
-            DrawSegment(nieuwSegment, points);
-
-            // Deselecteer alles
-            foreach (var ellipse in selectedEllipses)
-            {
-                ellipse.Fill = Brushes.Red;
-                ellipse.Width = 5;
-                ellipse.Height = 5;
-            }
-            selectedEllipses.Clear();
         }
         private void VerwijderVerbinding_Click(object sender, RoutedEventArgs e)
         {
@@ -265,29 +253,21 @@ namespace _1.Route_Netwerk_WPF
             int id1 = (int)selectedEllipses[0].Tag;
             int id2 = (int)selectedEllipses[1].Tag;
 
-            // Zoek het segment dat deze twee punten verbindt
-            int index = segmentData.ToList().FindIndex(s =>
-                (s.StartPointId == id1 && s.EndPointId == id2) ||
-                (s.StartPointId == id2 && s.EndPointId == id1));
-
-            if (index == -1)
-            {
-                MessageBox.Show("Er bestaat geen verbinding tussen deze twee punten.");
-                return;
-            }
-
-            var segment = segmentData[index];
-
             try
             {
-                netwerkBeheerder.VerwijderSegment(segment.StartPointId, segment.EndPointId);
+                netwerkBeheerder.RemoveSegment(id1, id2);
 
-                NetworkCanvas.Children.Remove(segmentLines[index]);
+                int index = segmentData.ToList().FindIndex(s =>
+                    (s.StartPointId == id1 && s.EndPointId == id2) ||
+                    (s.StartPointId == id2 && s.EndPointId == id1));
 
-                segmentLines.RemoveAt(index);
-                segmentData.RemoveAt(index);
+                if (index != -1)
+                {
+                    NetworkCanvas.Children.Remove(segmentLines[index]);
+                    segmentLines.RemoveAt(index);
+                    segmentData.RemoveAt(index);
+                }
 
-                // Reset selectie
                 foreach (var ellipse in selectedEllipses)
                 {
                     ellipse.Fill = Brushes.Red;
@@ -298,12 +278,12 @@ namespace _1.Route_Netwerk_WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fout bij het verwijderen van de verbinding: " + ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
         private void UpdateConnectedSegments(int pointId)
         {
-            for(int i = 0; i < segmentData.Count; i++)
+            for (int i = 0; i < segmentData.Count; i++)
             {
                 var segment = segmentData[i];
                 if (segment.StartPointId == pointId || segment.EndPointId == pointId)
@@ -333,6 +313,8 @@ namespace _1.Route_Netwerk_WPF
             {
                 if (actiefPuntId is int id)
                 {
+                    netwerkBeheerder.DeletePoint(id);
+
                     if (pointEllipses.TryGetValue(id, out var ellipse))
                     {
                         NetworkCanvas.Children.Remove(ellipse);
@@ -350,13 +332,12 @@ namespace _1.Route_Netwerk_WPF
                         }
                     }
 
-                    netwerkBeheerder.VerwijderPunt(id);
                     points.Remove(points.First(p => p.Id == id));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Je kan geen punt verwijderen die aan een segment verbonden is!", ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
         private void VoegPuntToe_Click(object sender, RoutedEventArgs e)
@@ -383,7 +364,19 @@ namespace _1.Route_Netwerk_WPF
             var nieuwPunt = new NetworkPointUI { X = x, Y = y };
 
             DrawNetworkPoint(nieuwPunt);
-            netwerkBeheerder.SaveNetworkPoint(NetworkPointMapper.MapToDomain(nieuwPunt));
+
+            try
+            {
+                netwerkBeheerder.SaveNetworkPoint(NetworkPointMapper.MapToDomain(nieuwPunt));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                NetworkCanvas.Children.Remove(NetworkCanvas.Children[^1]);
+                isAddPointMode = false;
+                this.Cursor = Cursors.Arrow;
+                return;
+            }
 
             var window = new NetworkWindow(nieuwPunt, netwerkBeheerder);
             bool? result = window.ShowDialog();
@@ -408,7 +401,6 @@ namespace _1.Route_Netwerk_WPF
                 return;
             }
 
-            // Vraag route-naam aan de gebruiker
             string routeNaam = Microsoft.VisualBasic.Interaction.InputBox(
                 "Geef een naam voor de nieuwe route (min. 3 letters):",
                 "Nieuwe Route",
@@ -422,21 +414,20 @@ namespace _1.Route_Netwerk_WPF
 
             try
             {
-                // Zet geselecteerde ellipsen om naar domain NetworkPoints
                 List<NetworkPoint> punten = selectedEllipses
                     .Select(el => (int)el.Tag)
                     .Select(id =>
                     {
-                        var uiPoint = points.First(p => p.Id == id);
+                        var uiPoint = points.FirstOrDefault(p => p.Id == id);
+                        if (uiPoint == null)
+                            throw new InvalidOperationException($"Punt met id {id} bestaat niet meer in de lijst.");
                         return NetworkPointMapper.MapToDomain(uiPoint);
                     })
                     .ToList();
 
-                // Maak de route
                 var routeBeheerder = new RouteBeheerder(new RouteRepository());
                 routeBeheerder.MaakNieuweRoute(routeNaam, punten);
 
-                // Reset selectie
                 foreach (var ellipse in selectedEllipses)
                 {
                     ellipse.Fill = Brushes.Red;
@@ -451,6 +442,67 @@ namespace _1.Route_Netwerk_WPF
             {
                 MessageBox.Show("Fout bij het aanmaken van de route: " + ex.Message);
             }
+
+        }
+        private void ShowRoute_Click(object sender, RoutedEventArgs e)
+        {
+            var routeBeheerder = new RouteBeheerder(new RouteRepository());
+            var alleRoutes = routeBeheerder.GetAllRoutes();
+
+            var routeNamen = alleRoutes.Select(r => r.Naam).ToList();
+            string gekozenNaam = Microsoft.VisualBasic.Interaction.InputBox(
+                "Kies een route:\n" + string.Join("\n", routeNamen),
+                "Route tonen",
+                routeNamen.FirstOrDefault() ?? "");
+
+            if (string.IsNullOrWhiteSpace(gekozenNaam))
+                return;
+
+            var gekozenRoute = alleRoutes.FirstOrDefault(r => r.Naam.Equals(gekozenNaam, StringComparison.OrdinalIgnoreCase));
+            if (gekozenRoute == null)
+            {
+                MessageBox.Show("Route niet gevonden.");
+                return;
+            }
+
+            ToonRouteOpCanvas(gekozenRoute);
+        }
+        private void ToonRouteOpCanvas(Route route)
+        {
+            foreach (var ellipse in pointEllipses.Values)
+            {
+                ellipse.Fill = Brushes.Red;
+                ellipse.Width = 5;
+                ellipse.Height = 5;
+            }
+            selectedEllipses.Clear();
+            routeEllipses.Clear();
+
+            foreach (var punt in route.Punten)
+            {
+                if (pointEllipses.TryGetValue(punt.Id, out var ellipse))
+                {
+                    ellipse.Fill = punt.IsStopPlaats ? Brushes.Orange : Brushes.Blue;
+                    ellipse.Width = 7;
+                    ellipse.Height = 7;
+                    selectedEllipses.Add(ellipse);
+                    routeEllipses.Add(ellipse);
+                }
+            }
+            isRouteShown = true;
+        }
+        private void StopRouteTonen_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset alle ellipsen naar standaard
+            foreach (var ellipse in routeEllipses)
+            {
+                ellipse.Fill = Brushes.Red;
+                ellipse.Width = 5;
+                ellipse.Height = 5;
+            }
+            selectedEllipses.Clear();
+            routeEllipses.Clear();
+            isRouteShown = false;
         }
     }
 }

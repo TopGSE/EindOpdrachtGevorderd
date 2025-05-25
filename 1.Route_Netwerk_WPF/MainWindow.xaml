@@ -19,6 +19,8 @@
                 <ContextMenu>
                     <MenuItem Header="Voeg punt toe" Click="VoegPuntToe_Click"/>
                     <MenuItem Header="Maak een route" Click="MaakRoute_Click"/>
+                    <MenuItem Header="Show Route" Click="ShowRoute_Click"/>
+                    <MenuItem Header="Stop Route Tonen" Click="StopRouteTonen_Click"/>
                 </ContextMenu>
             </Canvas.ContextMenu>
         </Canvas>
