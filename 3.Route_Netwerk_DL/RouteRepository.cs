@@ -187,7 +187,6 @@ namespace _3.Route_Netwerk_DL
 
             return route;
         }
-
         public void UpdateRoute(Route loadedRoute)
         {
             using SqlConnection conn = new SqlConnection(connectionString);
@@ -242,6 +241,39 @@ namespace _3.Route_Netwerk_DL
             {
                 tx.Rollback();
                 throw new Exception("Fout bij het updaten van de route: " + ex.Message);
+            }
+        }
+        public void DeleteRoute(int id)
+        {
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+            SqlTransaction tx = conn.BeginTransaction();
+            try
+            {
+                // Verwijder de route punten
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM RoutePoints WHERE RouteId = @Id", conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                // Verwijder de route segmenten
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM RouteSegments WHERE RouteId = @Id", conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                // Verwijder de route zelf
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM Routes WHERE Id = @Id", conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                tx.Commit();
+            }
+            catch (Exception ex)
+            {
+                tx.Rollback();
+                throw new Exception("Fout bij het verwijderen van de route: " + ex.Message);
             }
         }
     }

@@ -43,7 +43,13 @@ namespace _2.Route_Netwerk_BL.Managers
         {
             repo.UpdateRoute(loadedRoute);
         }
+
+        public void DeleteRoute(int id)
+        {
+            repo.DeleteRoute(id);
+        }
         //TODO: Fix the query in the repository and implement the methods in de wpf voor route te updaten
+        //TODO: Gebruik mappers in de routewpf zodat de veranderingen zichtbaar worden in de UI
 
     }
 }

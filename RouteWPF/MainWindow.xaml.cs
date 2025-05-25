@@ -30,18 +30,25 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         routeBeheerder = new RouteBeheerder(new RouteRepository());
-        var domainRoutes = routeBeheerder.GetAllRoutes();
-        var uiRoutes = domainRoutes.Select(r => RouteMapper.MapToUI(r)).ToList();
-        allRoutes = new ObservableCollection<RouteUI>(uiRoutes);
+        allRoutes = new ObservableCollection<RouteUI>(routeBeheerder.GetAllRoutes().Select(RouteMapper.MapToUI));
         RoutesDataGrid.ItemsSource = allRoutes;
     }
 
     private void UpdateRoute_Click(object sender, RoutedEventArgs e)
     {
-        if(RoutesDataGrid.SelectedItem is RouteUI selectedRoute)
+        if (RoutesDataGrid.SelectedItem is RouteUI selectedRoute)
         {
             RouteWindow rw = new RouteWindow(selectedRoute.Id);
             bool? result = rw.ShowDialog();
+            if (result == true)
+            {
+                // Reload the updated route from the database
+                var updatedRoute = routeBeheerder.GetRouteById(selectedRoute.Id);
+                // Update the properties of the selected RouteUI
+                selectedRoute.Naam = updatedRoute.Naam;
+                // If you also want to update points, do:
+                // selectedRoute.Punten = updatedRoute.Punten;
+            }
         }
         else
         {
@@ -49,8 +56,22 @@ public partial class MainWindow : Window
         }
     }
 
+
     private void DeleteRoute_Click(object sender, RoutedEventArgs e)
     {
+        if (RoutesDataGrid.SelectedItem is RouteUI selectedRoute)
+        {
+            var result = MessageBox.Show("Weet je zeker dat je deze route wilt verwijderen?", "Bevestig Verwijderen", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                routeBeheerder.DeleteRoute(selectedRoute.Id);
+                allRoutes.Remove(selectedRoute);
+            }
+        }
+        else
+        {
+            MessageBox.Show("Selecteer een route om te verwijderen.");
+        }
 
     }
 }

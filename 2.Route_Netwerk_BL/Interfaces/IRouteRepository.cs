@@ -14,5 +14,6 @@ namespace _2.Route_Netwerk_BL.Interfaces
         List<NetworkPoint> HaalPuntenOp(int id);
         Route GetRouteById(int id);
         void UpdateRoute(Route loadedRoute);
+        void DeleteRoute(int id);
     }
 }
