@@ -23,6 +23,7 @@ namespace RouteWPF
     public partial class RouteWindow : Window
     {
         private readonly RouteBeheerder routeBeheerder;
+        private readonly NetwerkBeheerder netwerkBeheerder = new NetwerkBeheerder(new NetwerkRepository());
         private readonly int routeId;
         private Route loadedRoute;
 
@@ -75,6 +76,54 @@ namespace RouteWPF
                 MessageBox.Show($"Fout bij het opslaan van de route: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void VoegPuntInBegin_Click(object sender, RoutedEventArgs e)
+        {
+            VoegPuntAanRouteToe(inBegin: true);
+        }
+
+        private void VoegPuntOpEinde_Click(object sender, RoutedEventArgs e)
+        {
+            VoegPuntAanRouteToe(inBegin: false);
+        }
+
+        private void VoegPuntAanRouteToe(bool inBegin)
+        {
+            // Vraag direct om een ID
+            string input = Microsoft.VisualBasic.Interaction.InputBox(
+                "Geef het ID van het netwerkpunt dat je wilt toevoegen:",
+                "Punt toevoegen");
+
+            if (!int.TryParse(input, out int gekozenId))
+            {
+                MessageBox.Show("Ongeldig ID.");
+                return;
+            }
+
+            var allePoints = netwerkBeheerder.GetNetworkPoints();
+            var bestaandeIds = loadedRoute.Punten.Select(p => p.Id).ToHashSet();
+            var gekozenPunt = allePoints.FirstOrDefault(p => p.Id == gekozenId);
+
+            if (gekozenPunt == null)
+            {
+                MessageBox.Show("Dit netwerkpunt bestaat niet.");
+                return;
+            }
+            if (bestaandeIds.Contains(gekozenId))
+            {
+                MessageBox.Show("Dit punt zit al in de route.");
+                return;
+            }
+
+            if (inBegin)
+                loadedRoute.Punten.Insert(0, gekozenPunt);
+            else
+                loadedRoute.Punten.Add(gekozenPunt);
+
+            PointsDataGrid.Items.Refresh();
+        }
+
+
 
     }
 }

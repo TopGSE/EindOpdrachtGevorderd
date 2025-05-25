@@ -24,6 +24,7 @@ namespace RouteWPF;
 public partial class MainWindow : Window
 {
     private RouteBeheerder routeBeheerder;
+    private NetwerkBeheerder netwerkBeheerder = new NetwerkBeheerder(new NetwerkRepository());
     public ObservableCollection<RouteUI> allRoutes; 
 
     public MainWindow()
@@ -74,4 +75,7 @@ public partial class MainWindow : Window
         }
 
     }
+
+    
+
 }
